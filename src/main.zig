@@ -3,6 +3,7 @@ const testing = std.testing;
 
 const c = @cImport({
     @cInclude("tree_sitter/api.h");
+    @cInclude("tree_sitter/highlight.h");
     @cInclude("tree-sitter-zig/src/tree_sitter/parser.h");
 });
 
