@@ -103,14 +103,16 @@ pub fn build(b: *std.Build) void {
 fn addDependencies(b: *std.Build, step: *std.Build.Step.Compile, opts: anytype) void {
     _ = opts;
     _ = b;
-    
+
     step.linkLibC();
-    
+
     // Add tree-sitter
     step.addCSourceFile(.{ .file = .{ .path = "tree-sitter/lib/src/lib.c" }, .flags = &.{} });
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/lib/include" });
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/lib/src" });
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/highlight/include" });
+    step.addLibraryPath(std.Build.LazyPath{ .path = "tree-sitter/target/release" });
+    step.linkSystemLibrary("tree_sitter_highlight");
 
     // Add tree-sitter-zig
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter-zig/src" });

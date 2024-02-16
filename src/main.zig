@@ -20,4 +20,7 @@ pub fn main() !void {
     defer c.ts_tree_delete(tree);
     const root_node = c.ts_tree_root_node(tree);
     std.debug.print("syntax tree: {s}\n", .{c.ts_node_string(root_node)});
+
+    const highlighter = c.ts_highlighter_new(@constCast(@alignCast(@ptrCast(&.{}))), @constCast(@alignCast(@ptrCast(&.{}))), 0);
+    _ = highlighter;
 }
