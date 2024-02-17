@@ -24,25 +24,23 @@ fn csb(comptime string: []const u8) [*c]const u8 {
 }
 
 pub fn main() !void {
-    // const parser: ?*c.TSParser = c.ts_parser_new();
-    // defer c.ts_parser_delete(parser);
-    // const set_lang_success = c.ts_parser_set_language(parser, tree_sitter_zig());
-    // try testing.expect(set_lang_success);
+    const source_code = "\n//asdf\nconst asdf: u32 = 1;\nfn asdf() void { return 0; }";
+    
+    const parser: ?*c.TSParser = c.ts_parser_new();
+    defer c.ts_parser_delete(parser);
+    const set_lang_success = c.ts_parser_set_language(parser, tree_sitter_zig());
+    try testing.expect(set_lang_success);
 
-    // const source_code = "const asdf = 1;";
-    // const tree = c.ts_parser_parse_string(parser, null, source_code, source_code.len);
-    // defer c.ts_tree_delete(tree);
-    // const root_node = c.ts_tree_root_node(tree);
-    // std.debug.print("syntax tree: {s}\n", .{c.ts_node_string(root_node)});
+    const tree = c.ts_parser_parse_string(parser, null, source_code, source_code.len);
+    defer c.ts_tree_delete(tree);
+    const root_node = c.ts_tree_root_node(tree);
+    std.debug.print("syntax tree: {s}\n", .{c.ts_node_string(root_node)});
 
-    // const names: []const []const u8 = &.{ "function", "type", "constant", "keyword", "string" };
-    // const attribute_strings: []const []const u8 = &.{ "", "", "", "", "" };
-
-    const names: []const [*c]const u8 = &.{ "function", "type", "constant", "keyword", "string" };
-    const attribute_strings: []const [*c]const u8 = &.{ "", "", "", "", "" };
+    const names: []const [*c]const u8 = &.{ "comment", "variable", "type", "constant", "keyword", "string" };
+    // const attribute_strings: []const [*c]const u8 = &.{ "comment", "a", "", "", "", "" };
 
     // todo replace 1 with 5 / names.len
-    const highlighter = c.ts_highlighter_new(@constCast(@ptrCast(names)), @constCast(@ptrCast(attribute_strings)), @truncate(names.len));
+    const highlighter = c.ts_highlighter_new(@constCast(@ptrCast(names)), @constCast(@ptrCast(names)), @truncate(names.len));
     defer c.ts_highlighter_delete(highlighter);
 
     // TODO use relative file paths
@@ -50,9 +48,13 @@ pub fn main() !void {
     const highlights_query = @embedFile(highlights_query_path);
     const highlights_query_ptr: [*c]const u8 = highlights_query;
     
+    const injections_query_path = "queries/injections.scm"; 
+    const injections_query = @embedFile(injections_query_path);
+    const injections_query_ptr: [*c]const u8 = injections_query;
+    
     const empty: [:0]const u8  = "";
     const lang_name: [:0]const u8 = "zig";
-    const scope_name: [:0]const u8 = "zig-scope";
+    const scope_name: [:0]const u8 = "source.zig";
     const injection_regex: [:0]const u8 = "^zig";
 
     std.debug.print("queries {}\n\n", .{highlights_query.len});
@@ -64,15 +66,15 @@ pub fn main() !void {
         injection_regex,
         tree_sitter_zig(),
         highlights_query_ptr,
-        empty,
+        injections_query_ptr,
         empty,
         highlights_query.len,
-        0,
+        injections_query.len,
         0,
     );
 
     const buffer = c.ts_highlight_buffer_new();
-    const source_code = "const asdf: u32 = 1";
+    defer c.ts_highlight_buffer_delete(buffer);
     const source_code_ptr: [*c]const u8 = source_code;
     
     _ = c.ts_highlighter_highlight(highlighter, scope_name, source_code_ptr, source_code.len, buffer, 0);
