@@ -1,0 +1,61 @@
+.site-container {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 3rem;
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.site-title {
+    font-size: 3rem;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}
+
+.site-subtext {
+    margin: 3rem 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.inner-content {
+    margin: 3rem 0;
+}
+
+.title {
+    font-size: 34px;
+}
+
+.search-field {
+    width: 100%;
+    font-size: 2.5rem;
+    padding: 1rem;
+    border: 4px solid #fcdba5;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.search-result {
+    border-radius: 5px;
+    overflow: hidden;
+    background: #f8f8f8;
+}
+
+.search-result-title {
+    font-size: 2rem;
+    background: #fcdba5;
+    font-weight: bold;
+    padding: 1rem;
+}
+
+.search-result-body {
+    padding: 1rem;
+    font-size: 1.5rem;
+}
+
+.heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}

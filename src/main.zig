@@ -14,7 +14,7 @@ pub fn main() !void {
     const allocator = arena.allocator();
     defer arena.deinit();
 
-    try std.fs.cwd().makePath("dist");
+    try std.fs.cwd().makePath("dist/gen");
 
     const posts_dir = try std.fs.cwd().openDir("./posts", .{ .iterate = true });
     const layout = try std.fs.cwd().openFile("./layout.html", .{});
@@ -32,13 +32,13 @@ pub fn main() !void {
         var post_name = try std.mem.replaceOwned(u8, allocator, basename, ".html", "");
         post_name = try std.mem.replaceOwned(u8, allocator, post_name, "_", " ");
 
-        const final_post_contents = try allocator.alloc(u8, BIG_SIZE);
-        _ = std.mem.replace(u8, layout_contents, "%INNER_CONTENT%", post_contents, final_post_contents);
+        const final_post_contents = try std.mem.replaceOwned(u8, allocator, layout_contents, "%INNER_CONTENT%", post_contents);
         std.debug.print("{s}\n", .{final_post_contents});
 
-        const rel_path = try std.fs.path.join(allocator, &.{ "dist", entry.path });
+        const rel_path = try std.fs.path.join(allocator, &.{ "dist", "gen", entry.path });
         const new_post_file = try std.fs.cwd().createFile(rel_path, .{ .truncate = true });
         defer new_post_file.close();
+        try new_post_file.writeAll(final_post_contents);
         std.debug.print("{s}\n", .{rel_path});
     }
 
