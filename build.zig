@@ -111,7 +111,7 @@ fn addDependencies(b: *std.Build, step: *std.Build.Step.Compile, opts: anytype) 
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/lib/include" });
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/lib/src" });
     step.addIncludePath(std.Build.LazyPath{ .path = "tree-sitter/highlight/include" });
-    step.addLibraryPath(std.Build.LazyPath{ .path = "tree-sitter/target/release" });
+    step.addLibraryPath(std.Build.LazyPath{ .path = "tree-sitter/target/debug" });
     step.linkSystemLibrary("tree_sitter_highlight");
 
     // Add tree-sitter-zig

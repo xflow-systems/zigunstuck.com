@@ -38,30 +38,36 @@ pub fn main() !void {
     // const names: []const []const u8 = &.{ "function", "type", "constant", "keyword", "string" };
     // const attribute_strings: []const []const u8 = &.{ "", "", "", "", "" };
 
-    const names: []const [*c]const u8 = &.{ csb("function"), csb("type"), csb("constant"), csb("keyword"), csb("string") };
-    const attribute_strings: []const [*c]const u8 = &.{ csb(""), csb(""), csb(""), csb(""), csb("") };
+    const names: []const [*c]const u8 = &.{ "function", "type", "constant", "keyword", "string" };
+    const attribute_strings: []const [*c]const u8 = &.{ "", "", "", "", "" };
 
     // todo replace 1 with 5 / names.len
     const highlighter = c.ts_highlighter_new(@constCast(@ptrCast(names)), @constCast(@ptrCast(attribute_strings)), @truncate(names.len));
-    _ = highlighter;
+    defer c.ts_highlighter_delete(highlighter);
 
-    // const scope = cStr("source.zig");
-    // const injection_regex = cStr("^zig");
-    // const language = tree_sitter_zig();
-    // const highlights_query = cStr(@embedFile("queries/highlights.scm"));
-    // const injections_query = cStr(@embedFile("queries/injections.scm"));
-    // const locals_query = cStr("");
+    // TODO use relative file paths
+    const highlights_query_path = "queries/highlights.scm"; 
+    const highlights_query = @embedFile(highlights_query_path);
+    const highlights_query_ptr: [*c]const u8 = highlights_query;
+    
+    const empty: [:0]const u8  = "";
+    const lang_name: [:0]const u8 = "zig";
+    const scope_name: [:0]const u8 = "";
+    const injection_regex: [:0]const u8 = "^zig";
 
-    // _ = c.ts_highlighter_add_language(
-    //     highlighter,
-    //     scope.bytes,
-    //     injection_regex.bytes,
-    //     language,
-    //     highlights_query.bytes,
-    //     injections_query.bytes,
-    //     locals_query.bytes,
-    //     highlights_query.len,
-    //     injections_query.len,
-    //     locals_query.len,
-    // );
+    std.debug.print("queries {}\n\n", .{highlights_query.len});
+
+    _ = c.ts_highlighter_add_language(
+        highlighter,
+        lang_name,
+        scope_name,
+        injection_regex,
+        tree_sitter_zig(),
+        highlights_query_ptr,
+        empty,
+        empty,
+        highlights_query.len,
+        0,
+        0,
+    );
 }
