@@ -52,7 +52,7 @@ pub fn main() !void {
     
     const empty: [:0]const u8  = "";
     const lang_name: [:0]const u8 = "zig";
-    const scope_name: [:0]const u8 = "";
+    const scope_name: [:0]const u8 = "zig-scope";
     const injection_regex: [:0]const u8 = "^zig";
 
     std.debug.print("queries {}\n\n", .{highlights_query.len});
@@ -70,4 +70,14 @@ pub fn main() !void {
         0,
         0,
     );
+
+    const buffer = c.ts_highlight_buffer_new();
+    const source_code = "const asdf: u32 = 1";
+    const source_code_ptr: [*c]const u8 = source_code;
+    
+    _ = c.ts_highlighter_highlight(highlighter, scope_name, source_code_ptr, source_code.len, buffer, 0);
+
+    const html_output: [*c]const u8 = c.ts_highlight_buffer_content(buffer);
+    const spanned_output = std.mem.span(html_output);
+    std.debug.print("html: \n\n{s}\n\n", .{spanned_output});
 }
