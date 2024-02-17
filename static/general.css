@@ -1,0 +1,12 @@
+.site-container {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+.inner-content {
+    padding: 20px;
+}
+
+.title {
+    font-size: 34px;
+}
