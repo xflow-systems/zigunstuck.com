@@ -3,4 +3,4 @@
 	url = https://github.com/maxxnino/tree-sitter-zig
 [submodule "tree-sitter"]
 	path = tree-sitter
-	url = https://github.com/xflow-systems/tree-sitter
+	url = git@github.com:xflow-systems/tree-sitter.git
